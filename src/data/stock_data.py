@@ -9,12 +9,14 @@ import pandas as pd
 from alpha_vantage.fundamentaldata import FundamentalData
 from alpha_vantage.techindicators import TechIndicators
 
-from config.config import STOCK_DATA, API_CONFIG
+from config.config import STOCK_DATA, STOCK_FILTERS
 
 class StockDataFetcher:
     def __init__(self):
         """初始化数据获取器"""
         self.alpha_vantage_key = os.getenv('ALPHA_VANTAGE_API_KEY')
+        if not self.alpha_vantage_key:
+            raise ValueError("未設置 ALPHA_VANTAGE_API_KEY 環境變量")
         self.fd = FundamentalData(key=self.alpha_vantage_key)
         self.ti = TechIndicators(key=self.alpha_vantage_key)
 
@@ -98,14 +100,18 @@ class StockDataFetcher:
         """
         filtered_symbols = []
         for symbol in symbols:
-            fundamental_data = self.get_fundamental_data(symbol)
-            if not fundamental_data:
+            try:
+                fundamental_data = self.get_fundamental_data(symbol)
+                if not fundamental_data:
+                    continue
+                    
+                if (fundamental_data['MarketCap'] >= STOCK_DATA['market_cap_min'] and
+                    fundamental_data['ROE'] >= STOCK_FILTERS['roe_min'] and
+                    fundamental_data['PE'] <= STOCK_FILTERS['pe_max'] and
+                    fundamental_data['DebtToEquity'] <= STOCK_FILTERS['debt_equity_max']):
+                    filtered_symbols.append(symbol)
+            except Exception as e:
+                print(f"篩選{symbol}時出錯: {str(e)}")
                 continue
-                
-            if (fundamental_data['MarketCap'] >= STOCK_DATA['market_cap_min'] and
-                fundamental_data['ROE'] >= STOCK_FILTERS['roe_min'] and
-                fundamental_data['PE'] <= STOCK_FILTERS['pe_max'] and
-                fundamental_data['DebtToEquity'] <= STOCK_FILTERS['debt_equity_max']):
-                filtered_symbols.append(symbol)
                 
         return filtered_symbols 
