@@ -1,6 +1,7 @@
 """
 Web應用界面模块
 """
+import os
 import sys
 from pathlib import Path
 
@@ -14,8 +15,10 @@ import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 
+# 直接從配置文件導入
 try:
-    from config import STOCK_DATA, STOCK_FILTERS, WEB_CONFIG
+    sys.path.insert(0, project_root)
+    from config.config import STOCK_DATA, STOCK_FILTERS, WEB_CONFIG
     print("成功導入配置")
 except Exception as e:
     print(f"導入配置時出錯: {str(e)}")

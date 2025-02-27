@@ -2,7 +2,14 @@
 股票数据获取模块
 """
 import os
+import sys
 from typing import List, Dict, Any
+from pathlib import Path
+
+# 添加项目根目录到 Python 路径
+project_root = str(Path(__file__).parent.parent.parent)
+if project_root not in sys.path:
+    sys.path.append(project_root)
 
 import yfinance as yf
 import pandas as pd
