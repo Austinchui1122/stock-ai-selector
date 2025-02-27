@@ -14,9 +14,16 @@ import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 
+try:
+    from config import STOCK_DATA, STOCK_FILTERS, WEB_CONFIG
+    print("成功導入配置")
+except Exception as e:
+    print(f"導入配置時出錯: {str(e)}")
+    st.error("配置導入失敗，請檢查配置文件")
+    raise
+
 from src.data.stock_data import StockDataFetcher
 from src.models.stock_predictor import StockPredictor
-from config.config import WEB_CONFIG, STOCK_DATA, STOCK_FILTERS
 
 def create_stock_chart(historical_data: pd.DataFrame, predictions: list, symbol: str) -> go.Figure:
     """创建股票图表
