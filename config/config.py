@@ -11,7 +11,7 @@ STOCK_DATA = {
 
 # 选股条件
 STOCK_FILTERS = {
-    'roe_min': 0.15,  # 最小ROE
+    'roe_min': 0.15,  # 最小ROE（15%）
     'pe_max': 25,  # 最大PE
     'debt_equity_max': 0.5,  # 最大负债权益比
 }
@@ -48,7 +48,7 @@ MODEL_PARAMS = {
 # Web应用配置
 WEB_CONFIG = {
     'host': '0.0.0.0',
-    'port': 8080,
+    'port': 8501,
     'debug': True
 }
 
