@@ -15,10 +15,18 @@ class StockDataFetcher:
     def __init__(self):
         """初始化数据获取器"""
         self.alpha_vantage_key = os.getenv('ALPHA_VANTAGE_API_KEY')
+        print(f"API Key 前4位: {self.alpha_vantage_key[:4] if self.alpha_vantage_key else 'None'}")  # 只打印前4位，保護密鑰安全
+        
         if not self.alpha_vantage_key:
             raise ValueError("未設置 ALPHA_VANTAGE_API_KEY 環境變量")
-        self.fd = FundamentalData(key=self.alpha_vantage_key)
-        self.ti = TechIndicators(key=self.alpha_vantage_key)
+            
+        try:
+            self.fd = FundamentalData(key=self.alpha_vantage_key)
+            self.ti = TechIndicators(key=self.alpha_vantage_key)
+            print("Alpha Vantage API 初始化成功")
+        except Exception as e:
+            print(f"Alpha Vantage API 初始化失敗: {str(e)}")
+            raise
 
     def get_stock_price_history(self, symbol: str) -> pd.DataFrame:
         """获取股票历史价格数据
